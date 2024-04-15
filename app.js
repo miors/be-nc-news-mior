@@ -1,20 +1,14 @@
 const express = require("express");
 const app = express();
 const topicController = require("./controllers/topics.controller");
-const {
-  handleCustomErrors,
-  handlePsqlErrors,
-  handleServerErrors,
-} = require("./errors/index.js");
-
-app.use(express.json());
+const { handleCustomErrors } = require("./errors/index.js");
 
 app.get("/api/topics", topicController.getAllTopics);
 
-app.get("*", topicController.getUnknownEndpoint);
+app.all("*", (res, req, next) => {
+  next({ status: 404, msg: "Not Found" });
+});
 
 app.use(handleCustomErrors);
-app.use(handlePsqlErrors);
-app.use(handleServerErrors);
 
 module.exports = app;
