@@ -1,3 +1,10 @@
 # Northcoders News API
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
+## These files need to be created to connect to databases
+
+.env.test -> to connect to test database
+.env.development -> to connect to development database
+
+## In each of the above file, this line needs to be created
+
+PGDATABASE=\<name of database\>
