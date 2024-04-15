@@ -6,10 +6,3 @@ exports.fetchAllTopics = () => {
     return rows;
   });
 };
-
-exports.fetchUnknownEndpoint = () => {
-  return Promise.reject({
-    status: 404,
-    msg: "Not Found",
-  });
-};
