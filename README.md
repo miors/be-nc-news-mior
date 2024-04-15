@@ -7,4 +7,4 @@
 
 ## In each of the above file, this line needs to be created
 
-PGDATABASE=<name of database>
+PGDATABASE=\<name of database\>
