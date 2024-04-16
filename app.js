@@ -2,7 +2,11 @@ const express = require("express");
 const app = express();
 const topicController = require("./controllers/topics.controller");
 const articleController = require("./controllers/articles.controller");
-const { handleCustomErrors, handlePsqlErrors } = require("./errors/index.js");
+const {
+  handleCustomErrors,
+  handlePsqlErrors,
+  handleServerErrors,
+} = require("./errors/index.js");
 
 app.get("/api/topics", topicController.getAllTopics);
 
@@ -18,5 +22,6 @@ app.all("*", (req, res, next) => {
 
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
+app.use(handleServerErrors);
 
 module.exports = app;
