@@ -4,6 +4,7 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data");
 const apiEndpoints = require("../endpoints.json");
+require("jest-sorted");
 
 beforeEach(() => seed(data));
 afterAll(() => {
@@ -11,7 +12,7 @@ afterAll(() => {
 });
 
 describe("GET /api/topics", () => {
-  it("GET:200 sends an array of topic objects to the client", () => {
+  it("GET:200 should send an array of topic objects to the client", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -24,7 +25,7 @@ describe("GET /api/topics", () => {
       });
   });
 
-  it("GET:404 route does not exist", () => {
+  it("GET:404 should display error when route does not exist", () => {
     return request(app)
       .get("/api/notARoute")
       .expect(404)
@@ -33,7 +34,7 @@ describe("GET /api/topics", () => {
 });
 
 describe("GET /api", () => {
-  it("GET:200 sends available API endpoints info", () => {
+  it("GET:200 should send available API endpoints info", () => {
     return request(app)
       .get("/api")
       .expect(200)
@@ -44,7 +45,7 @@ describe("GET /api", () => {
 });
 
 describe("GET /api/articles/:article_id", () => {
-  it("GET:200 sends associated article that matches article id", () => {
+  it("GET:200 should send associated article that matches article id", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
@@ -63,7 +64,7 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 
-  it("GET:404 if valid ID but not presence on DB, return error", () => {
+  it("GET:404 should return error if valid ID but not presence on DB", () => {
     return request(app)
       .get("/api/articles/1234567")
       .expect(404)
@@ -72,12 +73,45 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 
-  it("GET:400 if invalid ID, return error", () => {
+  it("GET:400 should return error if invalid ID", () => {
     return request(app)
       .get("/api/articles/invalidID")
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Invalid input");
+      });
+  });
+});
+
+describe("GET /api/articles", () => {
+  it("GET:200 should send all articles", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toHaveLength(13);
+        articles.forEach((article) => {
+          expect(Object.keys(article)).toHaveLength(8);
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+          expect(typeof article.comment_count).toBe("number");
+        });
+      });
+  });
+
+  it("GET:200 should sort using created_at by default", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
       });
   });
 });
