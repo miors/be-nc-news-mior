@@ -5,8 +5,10 @@ const { handleCustomErrors } = require("./errors/index.js");
 
 app.get("/api/topics", topicController.getAllTopics);
 
-app.all("*", (res, req, next) => {
-  next({ status: 404, msg: "Not Found" });
+app.get("/api", topicController.getAvailEndpoints);
+
+app.all("*", (req, res, next) => {
+  res.status(404).send({ msg: "Not Found" });
 });
 
 app.use(handleCustomErrors);
