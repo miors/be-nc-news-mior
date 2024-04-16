@@ -1,7 +1,4 @@
-const {
-  fetchAllTopics,
-  fetchAvailEndpoints,
-} = require("../models/topics.model");
+const { fetchAllTopics } = require("../models/topics.model");
 const endpoints = require("../endpoints.json");
 
 exports.getAllTopics = (req, res, next) => {

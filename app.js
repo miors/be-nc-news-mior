@@ -1,16 +1,20 @@
 const express = require("express");
 const app = express();
 const topicController = require("./controllers/topics.controller");
-const { handleCustomErrors } = require("./errors/index.js");
+const articleController = require("./controllers/articles.controller");
+const { handleCustomErrors, handlePsqlErrors } = require("./errors/index.js");
 
 app.get("/api/topics", topicController.getAllTopics);
 
 app.get("/api", topicController.getAvailEndpoints);
+
+app.get("/api/articles/:article_id", articleController.getArticleByID);
 
 app.all("*", (req, res, next) => {
   res.status(404).send({ msg: "Not Found" });
 });
 
 app.use(handleCustomErrors);
+app.use(handlePsqlErrors);
 
 module.exports = app;
