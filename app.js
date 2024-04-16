@@ -10,6 +10,8 @@ app.get("/api", topicController.getAvailEndpoints);
 
 app.get("/api/articles/:article_id", articleController.getArticleByID);
 
+app.get("/api/articles", articleController.getAllArticles);
+
 app.all("*", (req, res, next) => {
   res.status(404).send({ msg: "Not Found" });
 });
