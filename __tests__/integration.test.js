@@ -261,3 +261,27 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  it("DELETE:204 should be able to delete comment", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+
+  it("DELETE:404 send error if unable to delete comment due to valid comment_id which is not in DB", () => {
+    return request(app)
+      .delete("/api/comments/99999")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Unable to delete comment");
+      });
+  });
+
+  it("DELETE:400 send error if unable to delete comment due to invalid comment_id", () => {
+    return request(app)
+      .delete("/api/comments/invalidID")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
+      });
+  });
+});
