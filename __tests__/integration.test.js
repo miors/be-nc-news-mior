@@ -115,3 +115,52 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id/comments", () => {
+  it("GET: 200 should send all comments for an article in descending order", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toHaveLength(11);
+        expect(comments).toBeSortedBy("created_at", {
+          descending: true,
+        });
+        comments.forEach((comment) => {
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
+        });
+      });
+  });
+
+  it("GET: 200 should return empty array when article_id is valid and presence but no comment is presence", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toHaveLength(0);
+      });
+  });
+
+  it("GET:404 should return error if valid article_id but not presence on DB", () => {
+    return request(app)
+      .get("/api/articles/1000/comments")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("No article found");
+      });
+  });
+
+  it("GET:400 should return error if invalid article_id", () => {
+    return request(app)
+      .get("/api/articles/invalidArticleID/comments")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
+      });
+  });
+});
