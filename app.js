@@ -29,6 +29,11 @@ app.post(
   commentController.addCommentToArticle
 );
 
+app.patch(
+  "/api/articles/:article_id",
+  articleController.modifyArticleByArticleID
+);
+
 app.all("*", (req, res, next) => {
   res.status(404).send({ msg: "Not Found" });
 });

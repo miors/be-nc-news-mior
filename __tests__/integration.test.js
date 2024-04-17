@@ -218,3 +218,46 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  it("PATCH:200 should respond with the updated article when successful", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/9")
+      .send(newVote)
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.votes).toBe(1);
+        expect(typeof article.article_id).toBe("number");
+        expect(typeof article.title).toBe("string");
+        expect(typeof article.topic).toBe("string");
+        expect(typeof article.author).toBe("string");
+        expect(typeof article.body).toBe("string");
+        expect(typeof article.created_at).toBe("string");
+        expect(typeof article.votes).toBe("number");
+        expect(typeof article.article_img_url).toBe("string");
+      });
+  });
+
+  it("PATCH:404 should return error if valid article_id but not presence on DB", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/9999")
+      .send(newVote)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("No article found");
+      });
+  });
+
+  it("PATCH:400 should return error if invalid article_id is passed", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/invalidID")
+      .send(newVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
+      });
+  });
+});
