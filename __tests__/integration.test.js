@@ -164,3 +164,57 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  it("POST:201 should respond with posted message when successful", () => {
+    const postJson = {
+      username: "butter_bridge",
+      body: "Hello, this is a comment",
+    };
+
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send(postJson)
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(typeof comment.comment_id).toBe("number");
+        expect(typeof comment.body).toBe("string");
+        expect(typeof comment.article_id).toBe("number");
+        expect(typeof comment.author).toBe("string");
+        expect(typeof comment.votes).toBe("number");
+        expect(typeof comment.created_at).toBe("string");
+        expect(comment.author).toBe("butter_bridge");
+        expect(comment.body).toBe("Hello, this is a comment");
+      });
+  });
+
+  it("POST:404 should return error if valid article_id but not presence on DB", () => {
+    const postJson = {
+      username: "butter_bridge",
+      body: "Hello, this is a comment",
+    };
+
+    return request(app)
+      .post("/api/articles/999999/comments")
+      .send(postJson)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("ID not presence in DB");
+      });
+  });
+
+  it("POST:400 should return error if invalid input", () => {
+    const postJson = {
+      username: "butter_bridge",
+      body: "Hello, this is a comment",
+    };
+
+    return request(app)
+      .post("/api/articles/invalidInput/comments")
+      .send(postJson)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
+      });
+  });
+});
