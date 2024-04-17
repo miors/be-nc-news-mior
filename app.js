@@ -3,6 +3,7 @@ const app = express();
 const topicController = require("./controllers/topics.controller");
 const articleController = require("./controllers/articles.controller");
 const commentController = require("./controllers/comments.controller");
+const userController = require("./controllers/users.controller");
 const {
   handleCustomErrors,
   handlePsqlErrors,
@@ -23,6 +24,8 @@ app.get(
   "/api/articles/:article_id/comments",
   commentController.getAllCommentsByArticleID
 );
+
+app.get("/api/users", userController.getAllUsers);
 
 app.post(
   "/api/articles/:article_id/comments",
