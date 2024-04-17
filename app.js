@@ -34,6 +34,11 @@ app.patch(
   articleController.modifyArticleByArticleID
 );
 
+app.delete(
+  "/api/comments/:comment_id",
+  commentController.removeCommentByCommentID
+);
+
 app.all("*", (req, res, next) => {
   res.status(404).send({ msg: "Not Found" });
 });

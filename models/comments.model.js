@@ -23,3 +23,15 @@ exports.insertCommentToArticle = (article_id, body) => {
       return rows[0];
     });
 };
+
+exports.deleteCommentByCommentID = (comment_id) => {
+  return db
+    .query(`DELETE FROM comments WHERE comment_id=$1 returning *`, [comment_id])
+    .then(({ rows: deleted_comments }) => {
+      if (deleted_comments.length === 1) {
+        return Promise.resolve();
+      } else {
+        return Promise.reject({ status: 404, msg: "Unable to delete comment" });
+      }
+    });
+};

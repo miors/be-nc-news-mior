@@ -100,5 +100,9 @@
         }
       ]
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "udelete the given comment by comment_id",
+    "queries": []
   }
 }
