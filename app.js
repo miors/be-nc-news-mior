@@ -9,6 +9,8 @@ const {
   handleServerErrors,
 } = require("./errors/index.js");
 
+app.use(express.json());
+
 app.get("/api/topics", topicController.getAllTopics);
 
 app.get("/api", topicController.getAvailEndpoints);
@@ -20,6 +22,11 @@ app.get("/api/articles", articleController.getAllArticles);
 app.get(
   "/api/articles/:article_id/comments",
   commentController.getAllCommentsByArticleID
+);
+
+app.post(
+  "/api/articles/:article_id/comments",
+  commentController.addCommentToArticle
 );
 
 app.all("*", (req, res, next) => {

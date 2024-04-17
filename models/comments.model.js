@@ -11,3 +11,15 @@ exports.fetchAllCommentsByArticleID = (article_id) => {
       return rows;
     });
 };
+
+exports.insertCommentToArticle = (article_id, body) => {
+  return db
+    .query(
+      `INSERT INTO comments (body, article_id, author)
+  VALUES ($1, $2, $3) returning *;`,
+      [body.body, article_id, body.username]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
