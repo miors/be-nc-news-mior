@@ -4,6 +4,21 @@
 
 https://be-nc-news-mior.onrender.com/
 
+## List of endpoints
+
+https://github.com/miors/be-nc-news-mior/blob/main/endpoints.json
+
+### Example endpoints
+
+GET /api
+GET /api/articles
+GET /api/articles/:article_id
+GET api/articles/:article_id/comments  
+GET /api/users  
+POST api/articles/:article_id/comments
+PATCH /api/articles/:article_id  
+DELETE /api/comments/:comment_id
+
 ## Summary of project
 
 The project is to build an API for the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as Reddit) which should provide this information to the front end architecture.

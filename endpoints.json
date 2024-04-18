@@ -61,7 +61,7 @@
       ]
     }
   },
-  "POST /api/articles/9/comments": {
+  "POST /api/articles/:article_id/comments": {
     "description": "add a comment for an article",
     "queries": [],
     "request_body": {
