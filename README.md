@@ -34,7 +34,7 @@ To run tests: Type -> `npm run test`
 
 ### These files need to be created to connect to databases
 
-.env.test -> to connect to test database
+.env.test -> to connect to test database  
 .env.development -> to connect to development database
 
 ### In each of the above file, this line needs to be created
