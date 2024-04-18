@@ -50,7 +50,7 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body: { article } }) => {
-        expect(Object.keys(article)).toHaveLength(8);
+        expect(Object.keys(article)).toHaveLength(9);
         expect(article.article_id).toBe(1);
         expect(article.title).toBe("Living in the shadow of a great man");
         expect(article.topic).toBe("mitch");
@@ -61,6 +61,7 @@ describe("GET /api/articles/:article_id", () => {
         expect(article.article_img_url).toBe(
           "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
         );
+        expect(article.comment_count).toBe(11);
       });
   });
 
