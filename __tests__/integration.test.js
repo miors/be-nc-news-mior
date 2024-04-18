@@ -125,7 +125,7 @@ describe("GET /api/articles", () => {
           descending: true,
         });
         articles.forEach((article) => {
-          expect(Object.keys(article)).toHaveLength(8);
+          expect(article.topic).toBe("mitch");
           expect(typeof article.author).toBe("string");
           expect(typeof article.title).toBe("string");
           expect(typeof article.article_id).toBe("number");
