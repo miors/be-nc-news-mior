@@ -138,6 +138,15 @@ describe("GET /api/articles", () => {
       });
   });
 
+  it("GET:200 should send empty array if topic query string has no match", () => {
+    return request(app)
+      .get("/api/articles?topic=noMatch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toHaveLength(0);
+      });
+  });
+
   it("GET:400 should return error if order query string value is invalid", () => {
     return request(app)
       .get("/api/articles?topic=mitch&order=invalidOrder")
