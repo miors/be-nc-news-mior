@@ -15,22 +15,22 @@ The project is to build an API for the purpose of accessing application data pro
 Repository can be clone from this URL:
 https://github.com/miors/be-nc-news-mior
 
-Depending on your settings, to clone, either type -> git clone https://github.com/miors/be-nc-news-mior.git
+Depending on your settings, to clone, either type -> `git clone https://github.com/miors/be-nc-news-mior.git`
 or
-type -> git clone git@github.com:miors/be-nc-news-mior.git
+type -> `git clone git@github.com:miors/be-nc-news-mior.git`
 
 ### Install dependencies
 
-Type-> npm install
+Type-> `npm install`
 
 ### Seed database
 
-For development: Type -> npm run seed
+For development: Type -> `npm run seed`
 For test: Test script will automatically run seed
 
 ### Run tests
 
-To run tests: Type -> npm run test
+To run tests: Type -> `npm run test`
 
 ### These files need to be created to connect to databases
 
