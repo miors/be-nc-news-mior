@@ -284,7 +284,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 
-  it.only("POST:400 should return error if comment is empty", () => {
+  it("POST:400 should return error if comment is empty", () => {
     const postJson = {
       username: "butter_bridge",
       body: "",
