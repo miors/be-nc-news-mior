@@ -12,15 +12,41 @@ exports.fetchArticleByID = (article_id) => {
     });
 };
 
-exports.fetchAllArticles = () => {
-  return db
-    .query(
-      `SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, COUNT(comment_id)::int AS comment_count FROM 
-      articles LEFT JOIN comments ON articles.article_id  = comments.article_id GROUP BY articles.article_id ORDER BY created_at DESC;`
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+exports.fetchAllArticles = (topic, order = "desc", sort_by = "created_at") => {
+  const capitalCaseOrder = order.toUpperCase();
+  const validOrdersArr = ["ASC", "DESC"];
+  const validSortBysArr = [
+    "author",
+    "title",
+    "article_id",
+    "topic",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+
+  if (
+    !validSortBysArr.includes(sort_by) ||
+    !validOrdersArr.includes(capitalCaseOrder)
+  ) {
+    return Promise.reject({ status: 400, msg: "Invalid query" });
+  }
+
+  const finalSqlArr = [];
+  let finalSqlStr = `
+  SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, COUNT(comment_id)::int AS comment_count FROM articles LEFT JOIN comments ON articles.article_id  = comments.article_id
+  `;
+
+  if (topic) {
+    finalSqlStr += " WHERE topic=$1";
+    finalSqlArr.push(topic);
+  }
+
+  finalSqlStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${capitalCaseOrder};`;
+
+  return db.query(finalSqlStr, finalSqlArr).then(({ rows }) => {
+    return rows;
+  });
 };
 
 exports.checkArticleExists = (article_id) => {
