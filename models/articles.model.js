@@ -68,10 +68,10 @@ exports.updateArticleByArticleID = (article_id, inc_votes) => {
       `UPDATE articles SET votes=(SELECT votes FROM articles WHERE article_id=$1)+$2 WHERE article_id=$1 RETURNING *`,
       [article_id, inc_votes]
     )
-    .then(({ rows: articles }) => {
-      if (articles.length === 0) {
+    .then(({ rows: updated_articles }) => {
+      if (updated_articles.length === 0) {
         return Promise.reject({ status: 404, msg: "No article found" });
       }
-      return articles[0];
+      return updated_articles[0];
     });
 };
