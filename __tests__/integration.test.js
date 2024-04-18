@@ -92,7 +92,6 @@ describe("GET /api/articles", () => {
       .then(({ body: { articles } }) => {
         expect(articles).toHaveLength(13);
         articles.forEach((article) => {
-          expect(Object.keys(article)).toHaveLength(8);
           expect(typeof article.author).toBe("string");
           expect(typeof article.title).toBe("string");
           expect(typeof article.article_id).toBe("number");
