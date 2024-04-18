@@ -114,6 +114,56 @@ describe("GET /api/articles", () => {
         });
       });
   });
+
+  it("GET:200 should filter the articles by the topic value specified in the query", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toHaveLength(12);
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+        articles.forEach((article) => {
+          expect(Object.keys(article)).toHaveLength(8);
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+          expect(typeof article.comment_count).toBe("number");
+        });
+      });
+  });
+
+  it("GET:200 should send empty array if topic query string has no match", () => {
+    return request(app)
+      .get("/api/articles?topic=noMatch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toHaveLength(0);
+      });
+  });
+
+  it("GET:400 should return error if order query string value is invalid", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&order=invalidOrder")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid query");
+      });
+  });
+
+  it("GET:400 should return error if sort_by query string value is invalid", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&sort_by=invalidSortBy")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid query");
+      });
+  });
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
