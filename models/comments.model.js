@@ -13,6 +13,9 @@ exports.fetchAllCommentsByArticleID = (article_id) => {
 };
 
 exports.insertCommentToArticle = (article_id, body) => {
+  if (!body.body) {
+    return Promise.reject({ status: 400, msg: "Comment is empty" });
+  }
   return db
     .query(
       `INSERT INTO comments (body, article_id, author)

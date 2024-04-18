@@ -235,6 +235,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(typeof comment.created_at).toBe("string");
         expect(comment.author).toBe("butter_bridge");
         expect(comment.body).toBe("Hello, this is a comment");
+        expect(comment.article_id).toBe(9);
       });
   });
 
@@ -253,7 +254,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 
-  it("POST:400 should return error if invalid input", () => {
+  it("POST:400 should return error if invalid article id", () => {
     const postJson = {
       username: "butter_bridge",
       body: "Hello, this is a comment",
@@ -265,6 +266,36 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Invalid input");
+      });
+  });
+
+  it("POST:404 should return error if invalid username", () => {
+    const postJson = {
+      username: "invalidUsername",
+      body: "Hello, this is a comment",
+    };
+
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send(postJson)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("ID not presence in DB");
+      });
+  });
+
+  it("POST:400 should return error if comment is empty", () => {
+    const postJson = {
+      username: "butter_bridge",
+      body: "",
+    };
+
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send(postJson)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Comment is empty");
       });
   });
 });
