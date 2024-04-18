@@ -25,21 +25,23 @@ Type-> `npm install`
 
 ### Seed database
 
+Before seeing database, these files need to be created to connect to databases:
+.env.test -> to connect to test database  
+.env.development -> to connect to development database
+
+In each of the above file, this line needs to be created:
+PGDATABASE=\<name of database\>
+
+Then setup the database by running this command:
+`npm run setup-dbs`
+
+After that, to seed the database, run these:
 For development: Type -> `npm run seed`
-For test: Test script will automatically run seed
+For test: Test script will automatically run seed, therefore just run the test by following the 'Run tests' section
 
 ### Run tests
 
 To run tests: Type -> `npm run test`
-
-### These files need to be created to connect to databases
-
-.env.test -> to connect to test database  
-.env.development -> to connect to development database
-
-### In each of the above file, this line needs to be created
-
-PGDATABASE=\<name of database\>
 
 ## Minimum version of Node.js and Postgres to run the project
 
