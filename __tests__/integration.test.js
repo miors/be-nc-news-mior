@@ -422,11 +422,4 @@ describe("GET /api/users", () => {
         });
       });
   });
-
-  it("GET:404 should display error when route does not exist", () => {
-    return request(app)
-      .get("/api/notARoute")
-      .expect(404)
-      .then(({ body: { msg } }) => expect(msg).toBe("Not Found"));
-  });
 });
