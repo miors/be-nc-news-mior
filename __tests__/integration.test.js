@@ -309,7 +309,26 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(200)
       .then(({ body: { article } }) => {
         expect(article.votes).toBe(1);
-        expect(typeof article.article_id).toBe("number");
+        expect(article.article_id).toBe(9);
+        expect(typeof article.title).toBe("string");
+        expect(typeof article.topic).toBe("string");
+        expect(typeof article.author).toBe("string");
+        expect(typeof article.body).toBe("string");
+        expect(typeof article.created_at).toBe("string");
+        expect(typeof article.votes).toBe("number");
+        expect(typeof article.article_img_url).toBe("string");
+      });
+  });
+
+  it("PATCH:200 should respond with the updated article even with additional keys in request body", () => {
+    const newVote = { inc_votes: 1, additional_key: 2 };
+    return request(app)
+      .patch("/api/articles/9")
+      .send(newVote)
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.votes).toBe(1);
+        expect(article.article_id).toBe(9);
         expect(typeof article.title).toBe("string");
         expect(typeof article.topic).toBe("string");
         expect(typeof article.author).toBe("string");
@@ -335,6 +354,28 @@ describe("PATCH /api/articles/:article_id", () => {
     const newVote = { inc_votes: 1 };
     return request(app)
       .patch("/api/articles/invalidID")
+      .send(newVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
+      });
+  });
+
+  it("PATCH:400 should return error if invalid key is passed", () => {
+    const newVote = { invalidKey: 1 };
+    return request(app)
+      .patch("/api/articles/9")
+      .send(newVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Column cannot be null");
+      });
+  });
+
+  it("PATCH:400 should return error if value is not a number", () => {
+    const newVote = { inc_votes: "notANumber" };
+    return request(app)
+      .patch("/api/articles/9")
       .send(newVote)
       .expect(400)
       .then(({ body: { msg } }) => {
