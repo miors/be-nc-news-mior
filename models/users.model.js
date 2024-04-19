@@ -8,3 +8,16 @@ exports.fetchAllUsers = () => {
       return users;
     });
 };
+
+exports.fetchUserByUserID = (username) => {
+  return db
+    .query(`SELECT username, name, avatar_url FROM users WHERE username=$1;`, [
+      username,
+    ])
+    .then(({ rows: users }) => {
+      if (users.length === 0) {
+        return Promise.reject({ status: 404, msg: "Invalid user" });
+      }
+      return users[0];
+    });
+};
