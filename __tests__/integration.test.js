@@ -455,3 +455,83 @@ describe("GET /api/users/:username", () => {
       });
   });
 });
+
+describe("PATCH /api/comments/:comment_id", () => {
+  it("PATCH:200 should respond with the updated comment when successful", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(newVote)
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment.body).toBe(
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+        );
+        expect(comment.article_id).toBe(9);
+        expect(comment.author).toBe("butter_bridge");
+        expect(comment.votes).toBe(17);
+        expect(comment.created_at).toBe("2020-04-06T12:17:00.000Z");
+      });
+  });
+
+  it("PATCH:200 should respond with the updated comment even with additional keys in request body", () => {
+    const newVote = { inc_votes: 1, additional_key: 2 };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(newVote)
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment.body).toBe(
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+        );
+        expect(comment.article_id).toBe(9);
+        expect(comment.author).toBe("butter_bridge");
+        expect(comment.votes).toBe(17);
+        expect(comment.created_at).toBe("2020-04-06T12:17:00.000Z");
+      });
+  });
+
+  it("PATCH:404 should return error if valid comment_id but not presence on DB", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/comments/9999")
+      .send(newVote)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("No comment found");
+      });
+  });
+
+  it("PATCH:400 should return error if invalid comment_id is passed", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/comments/invalidID")
+      .send(newVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
+      });
+  });
+
+  it("PATCH:400 should return error if invalid key is passed", () => {
+    const newVote = { invalidKey: 1 };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(newVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Column cannot be null");
+      });
+  });
+
+  it("PATCH:400 should return error if value is not a number", () => {
+    const newVote = { inc_votes: "notANumber" };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(newVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
+      });
+  });
+});

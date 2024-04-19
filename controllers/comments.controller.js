@@ -34,3 +34,14 @@ exports.removeCommentByCommentID = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.modifyCommentByCommentID = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  commentModel
+    .updateCommentByCommentID(comment_id, inc_votes)
+    .then((comment) => {
+      res.status(200).send({ comment });
+    })
+    .catch(next);
+};
