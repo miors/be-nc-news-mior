@@ -75,3 +75,14 @@ exports.updateArticleByArticleID = (article_id, inc_votes) => {
       return updated_articles[0];
     });
 };
+
+exports.addArticle = (body) => {
+  return db
+    .query(
+      `INSERT INTO articles (title, topic, author, body, article_img_url) VALUES ($1, $2, $3, $4, $5) returning *;`,
+      [body.title, body.topic, body.author, body.body, body.article_img_url]
+    )
+    .then(({ rows: articles }) => {
+      return articles[0];
+    });
+};

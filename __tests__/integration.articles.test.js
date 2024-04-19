@@ -191,7 +191,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 });
 
 describe("POST /api/articles/:article_id/comments", () => {
-  it("POST:201 should respond with posted message when successful", () => {
+  it("POST:201 should respond with posted comment when successful", () => {
     const postJson = {
       username: "butter_bridge",
       body: "Hello, this is a comment",
@@ -355,6 +355,35 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Invalid input");
+      });
+  });
+});
+
+describe("POST /api/articles", () => {
+  it("POST:201 should respond with posted article when successful", () => {
+    jsonBody = {
+      title: "To be or not to be",
+      topic: "mitch",
+      author: "icellusedkars",
+      body: "This is the question that has been baffling the world for centuries.",
+      article_img_url:
+        "https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Photos_icon_%282020%29.svg",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(jsonBody)
+      .expect(201)
+      .then(({ body: { article } }) => {
+        expect(article.title).toBe("To be or not to be");
+        expect(article.topic).toBe("mitch");
+        expect(article.author).toBe("icellusedkars");
+        expect(article.body).toBe(
+          "This is the question that has been baffling the world for centuries."
+        );
+        expect(article.article_img_url).toBe(
+          "https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Photos_icon_%282020%29.svg"
+        );
       });
   });
 });
