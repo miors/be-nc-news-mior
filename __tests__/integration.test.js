@@ -431,3 +431,27 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("GET /api/users/:username", () => {
+  it("GET:200 should return specific user", () => {
+    return request(app)
+      .get("/api/users/butter_bridge")
+      .expect(200)
+      .then(({ body: { user } }) => {
+        expect(user.username).toBe("butter_bridge");
+        expect(user.avatar_url).toBe(
+          "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        );
+        expect(user.name).toBe("jonny");
+      });
+  });
+
+  it("GET:404 should return error when user is invalid", () => {
+    return request(app)
+      .get("/api/users/invalidUser")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid user");
+      });
+  });
+});

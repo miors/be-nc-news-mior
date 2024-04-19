@@ -1,8 +1,9 @@
-const { fetchAllTopics } = require("../models/topics.model");
+const topicModel = require("../models/topics.model");
 const endpoints = require("../endpoints.json");
 
 exports.getAllTopics = (req, res, next) => {
-  fetchAllTopics()
+  topicModel
+    .fetchAllTopics()
     .then((topics) => {
       res.status(200).send({ topics });
     })

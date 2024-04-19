@@ -1,12 +1,9 @@
-const {
-  fetchArticleByID,
-  fetchAllArticles,
-  updateArticleByArticleID,
-} = require("../models/articles.model");
+const articleModel = require("../models/articles.model");
 
 exports.getArticleByID = (req, res, next) => {
   const { article_id } = req.params;
-  fetchArticleByID(article_id)
+  articleModel
+    .fetchArticleByID(article_id)
     .then((article) => {
       res.status(200).send({ article });
     })
@@ -15,7 +12,8 @@ exports.getArticleByID = (req, res, next) => {
 
 exports.getAllArticles = (req, res, next) => {
   const { topic, order, sort_by } = req.query;
-  fetchAllArticles(topic, order, sort_by)
+  articleModel
+    .fetchAllArticles(topic, order, sort_by)
     .then((articles) => {
       res.status(200).send({ articles });
     })
@@ -25,7 +23,8 @@ exports.getAllArticles = (req, res, next) => {
 exports.modifyArticleByArticleID = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
-  updateArticleByArticleID(article_id, inc_votes)
+  articleModel
+    .updateArticleByArticleID(article_id, inc_votes)
     .then((article) => {
       res.status(200).send({ article });
     })
