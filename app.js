@@ -9,38 +9,11 @@ const {
   handlePsqlErrors,
   handleServerErrors,
 } = require("./errors/index.js");
+const apiRouter = require("./routes/api-router");
 
 app.use(express.json());
 
-app.get("/api/topics", topicController.getAllTopics);
-
-app.get("/api", topicController.getAvailEndpoints);
-
-app.get("/api/articles/:article_id", articleController.getArticleByID);
-
-app.get("/api/articles", articleController.getAllArticles);
-
-app.get(
-  "/api/articles/:article_id/comments",
-  commentController.getAllCommentsByArticleID
-);
-
-app.get("/api/users", userController.getAllUsers);
-
-app.post(
-  "/api/articles/:article_id/comments",
-  commentController.addCommentToArticle
-);
-
-app.patch(
-  "/api/articles/:article_id",
-  articleController.modifyArticleByArticleID
-);
-
-app.delete(
-  "/api/comments/:comment_id",
-  commentController.removeCommentByCommentID
-);
+app.use("/api", apiRouter);
 
 app.all("*", (req, res, next) => {
   res.status(404).send({ msg: "Not Found" });
