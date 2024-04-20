@@ -3,9 +3,10 @@ const articleModel = require("../models/articles.model");
 
 exports.getAllCommentsByArticleID = (req, res, next) => {
   const { article_id } = req.params;
+  const { limit, p } = req.query;
 
   return Promise.all([
-    commentModel.fetchAllCommentsByArticleID(article_id),
+    commentModel.fetchAllCommentsByArticleID(article_id, limit, p),
     articleModel.checkArticleExists(article_id),
   ])
     .then(([comments, existOrNot]) => {

@@ -1,15 +1,43 @@
 const db = require("../db/connection");
 const queries = require("../db/queries");
 
-exports.fetchAllCommentsByArticleID = (article_id) => {
-  return db
-    .query(
-      `SELECT comment_id, comments.votes, comments.created_at, comments.author, comments.body, comments.article_id FROM articles INNER JOIN comments on articles.article_id = comments.article_id WHERE articles.article_id=$1 ORDER BY created_at DESC;`,
-      [article_id]
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+exports.fetchAllCommentsByArticleID = (article_id, limit = 10, p) => {
+  if (p === undefined) {
+    p = 1;
+  }
+
+  if (
+    (limit && Number.isNaN(Number(limit))) ||
+    (p && Number.isNaN(Number(p)))
+  ) {
+    return Promise.reject({ status: 400, msg: "Invalid query" });
+  }
+
+  let variablePosition = 1;
+  const finalSqlArr = [];
+  let finalSqlStr = `SELECT comment_id, comments.votes, comments.created_at, comments.author, comments.body, comments.article_id FROM articles INNER JOIN comments on articles.article_id = comments.article_id`;
+
+  if (article_id) {
+    finalSqlStr += ` WHERE articles.article_id=$${variablePosition++}`;
+    finalSqlArr.push(article_id);
+  }
+
+  finalSqlStr += ` ORDER BY created_at DESC`;
+
+  if (limit) {
+    finalSqlStr += ` LIMIT $${variablePosition++}`;
+    finalSqlArr.push(Number(limit));
+  }
+
+  if (p) {
+    const offset = (p - 1) * limit;
+    finalSqlStr += ` OFFSET $${variablePosition++};`;
+    finalSqlArr.push(Number(offset));
+  }
+
+  return db.query(finalSqlStr, finalSqlArr).then(({ rows }) => {
+    return rows;
+  });
 };
 
 exports.insertCommentToArticle = (article_id, body) => {
