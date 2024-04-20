@@ -30,3 +30,13 @@ exports.modifyArticleByArticleID = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.postArticle = (req, res, next) => {
+  const body = req.body;
+  articleModel
+    .addArticle(body)
+    .then((article) => {
+      res.status(201).send({ article });
+    })
+    .catch(next);
+};

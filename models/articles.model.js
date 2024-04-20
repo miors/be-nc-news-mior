@@ -1,5 +1,6 @@
 const db = require("../db/connection");
 const queries = require("../db/queries");
+const format = require("pg-format");
 
 exports.fetchArticleByID = (article_id) => {
   return db
@@ -73,5 +74,24 @@ exports.updateArticleByArticleID = (article_id, inc_votes) => {
         return Promise.reject({ status: 404, msg: "No article found" });
       }
       return updated_articles[0];
+    });
+};
+
+exports.addArticle = (body) => {
+  const addArticleInsertQuery = format(
+    `INSERT INTO articles (title, topic, author, body, article_img_url) VALUES %L RETURNING *;`,
+    [[body.title, body.topic, body.author, body.body, body.article_img_url]]
+  );
+  return db
+    .query(addArticleInsertQuery)
+    .then(({ rows: inserted_article }) => {
+      const article_id = inserted_article[0].article_id;
+      return db.query(
+        `SELECT articles.author, title, articles.body, topic, article_img_url, articles.article_id, articles.votes, articles.created_at, COUNT(comment_id)::int AS comment_count FROM articles LEFT JOIN comments ON articles.article_id  = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;`,
+        [article_id]
+      );
+    })
+    .then(({ rows: articles_with_comment_count }) => {
+      return articles_with_comment_count[0];
     });
 };

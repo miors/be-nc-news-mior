@@ -3,6 +3,7 @@ const articleController = require("../controllers/articles.controller");
 const commentController = require("../controllers/comments.controller");
 
 articleRouter.get("/", articleController.getAllArticles);
+articleRouter.post("/", articleController.postArticle);
 
 articleRouter.get("/:article_id", articleController.getArticleByID);
 
