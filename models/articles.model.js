@@ -16,7 +16,13 @@ exports.fetchArticleByID = (article_id) => {
     });
 };
 
-exports.fetchAllArticles = (topic, order = "desc", sort_by = "created_at") => {
+exports.fetchAllArticles = (
+  topic,
+  order = "desc",
+  sort_by = "created_at",
+  limit = 10,
+  p
+) => {
   const capitalCaseOrder = order.toUpperCase();
   const validOrdersArr = ["ASC", "DESC"];
   const validSortBysArr = [
@@ -29,27 +35,63 @@ exports.fetchAllArticles = (topic, order = "desc", sort_by = "created_at") => {
     "comment_count",
   ];
 
+  if (p === undefined) {
+    p = 1;
+  }
+
   if (
     !validSortBysArr.includes(sort_by) ||
-    !validOrdersArr.includes(capitalCaseOrder)
+    !validOrdersArr.includes(capitalCaseOrder) ||
+    (limit && Number.isNaN(Number(limit))) ||
+    (p && Number.isNaN(Number(p)))
   ) {
     return Promise.reject({ status: 400, msg: "Invalid query" });
   }
 
+  let variablePosition = 1;
   const finalSqlArr = [];
   let finalSqlStr = `
   SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, COUNT(comment_id)::int AS comment_count FROM articles LEFT JOIN comments ON articles.article_id  = comments.article_id
   `;
 
   if (topic) {
-    finalSqlStr += " WHERE topic=$1";
+    finalSqlStr += ` WHERE topic=$${variablePosition++}`;
     finalSqlArr.push(topic);
   }
 
-  finalSqlStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${capitalCaseOrder};`;
+  finalSqlStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${capitalCaseOrder}`;
+
+  if (limit) {
+    finalSqlStr += ` LIMIT $${variablePosition++}`;
+    finalSqlArr.push(Number(limit));
+  }
+
+  if (p) {
+    const offset = (p - 1) * limit;
+    finalSqlStr += ` OFFSET $${variablePosition++};`;
+    finalSqlArr.push(Number(offset));
+  }
+
+  return db
+    .query(finalSqlStr, finalSqlArr)
+    .then(({ rows }) => {
+      return rows;
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.totalCount = (topic) => {
+  const finalSqlArr = [];
+  let finalSqlStr = `SELECT COUNT(article_id)::int AS total_count
+  FROM articles`;
+
+  if (topic) {
+    finalSqlStr += ` WHERE topic = $1`;
+    finalSqlArr.push(topic);
+  }
 
   return db.query(finalSqlStr, finalSqlArr).then(({ rows }) => {
-    return rows;
+    return rows[0];
   });
 };
 

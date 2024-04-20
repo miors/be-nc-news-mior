@@ -11,11 +11,17 @@ exports.getArticleByID = (req, res, next) => {
 };
 
 exports.getAllArticles = (req, res, next) => {
-  const { topic, order, sort_by } = req.query;
-  articleModel
-    .fetchAllArticles(topic, order, sort_by)
-    .then((articles) => {
-      res.status(200).send({ articles });
+  const { topic, order, sort_by, limit, p } = req.query;
+  const promisesArr = [
+    articleModel.fetchAllArticles(topic, order, sort_by, limit, p),
+    articleModel.totalCount(topic),
+  ];
+
+  return Promise.all(promisesArr)
+    .then(([articles, { total_count }]) => {
+      {
+        res.status(200).send({ articles, total_count });
+      }
     })
     .catch(next);
 };
