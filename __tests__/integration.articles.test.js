@@ -147,7 +147,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body: { comments } }) => {
-        expect(comments).toHaveLength(11);
+        expect(comments).toHaveLength(10);
         expect(comments).toBeSortedBy("created_at", {
           descending: true,
         });
@@ -518,6 +518,92 @@ describe("GET /api/articles (pagination)", () => {
   it("GET:404 should send error when value of limit is invalid", () => {
     return request(app)
       .get(`/api/articles?limit=invalidLimit&p=2`)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid query");
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments (pagination)", () => {
+  it("GET:200 should be able to display limited results", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=2&p=1")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toHaveLength(2);
+        expect(comments).toBeSortedBy("created_at", {
+          descending: true,
+        });
+
+        comments.forEach((comment) => {
+          expect([2, 5].includes(comment.comment_id)).toBe(true);
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
+        });
+      });
+  });
+
+  it("GET:200 should be able to display results on 2nd page", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=2&p=2")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toHaveLength(2);
+        expect(comments).toBeSortedBy("created_at", {
+          descending: true,
+        });
+
+        comments.forEach((comment) => {
+          expect([18, 13].includes(comment.comment_id)).toBe(true);
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
+        });
+      });
+  });
+
+  it("GET:200 should send result if limit is omitted from query string", () => {
+    return request(app)
+      .get("/api/articles/1/comments?p=2")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toHaveLength(1);
+        expect(comments).toBeSortedBy("created_at", {
+          descending: true,
+        });
+
+        comments.forEach((comment) => {
+          expect([9].includes(comment.comment_id)).toBe(true);
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
+        });
+      });
+  });
+
+  it("GET:400 should send error if limit is invalid", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=invalidLimit&p=1")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid query");
+      });
+  });
+
+  it("GET:400 should send error if limit is invalid", () => {
+    return request(app)
+      .get("/api/articles/1/comments?limit=2&p=invalidP")
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Invalid query");

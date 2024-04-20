@@ -72,12 +72,9 @@ exports.fetchAllArticles = (
     finalSqlArr.push(Number(offset));
   }
 
-  return db
-    .query(finalSqlStr, finalSqlArr)
-    .then(({ rows }) => {
-      return rows;
-    })
-    .catch((err) => console.log(err));
+  return db.query(finalSqlStr, finalSqlArr).then(({ rows }) => {
+    return rows;
+  });
 };
 
 exports.totalCount = (topic) => {
