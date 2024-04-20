@@ -384,6 +384,61 @@ describe("POST /api/articles", () => {
         expect(article.article_img_url).toBe(
           "https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Photos_icon_%282020%29.svg"
         );
+        expect(article.comment_count).toBe(0);
+      });
+  });
+
+  it("POST:201 should respond with posted article even when article_img_url is not passed", () => {
+    jsonBody = {
+      title: "To be or not to be",
+      topic: "mitch",
+      author: "icellusedkars",
+      body: "This is the question that has been baffling the world for centuries.",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(jsonBody)
+      .expect(201)
+      .then(({ body: { article: article_with_comment_count } }) => {
+        expect(article_with_comment_count.article_img_url).toBe(null);
+      });
+  });
+
+  it("POST:400 should respond with error when body is null", () => {
+    jsonBody = {
+      title: "To be or not to be",
+      topic: "mitch",
+      author: "icellusedkars",
+      body: null,
+      article_img_url:
+        "https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Photos_icon_%282020%29.svg",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(jsonBody)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Column cannot be null");
+      });
+  });
+
+  it("POST:400 should respond with error when compulsory property is missing", () => {
+    jsonBody = {
+      topic: "mitch",
+      author: "icellusedkars",
+      body: "This is the question that has been baffling the world for centuries.",
+      article_img_url:
+        "https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Photos_icon_%282020%29.svg",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(jsonBody)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Column cannot be null");
       });
   });
 });
