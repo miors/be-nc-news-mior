@@ -610,3 +610,27 @@ describe("GET /api/articles/:article_id/comments (pagination)", () => {
       });
   });
 });
+
+describe("DELETE /api/articles/:article_id", () => {
+  it("DELETE:204 should be able to delete articles with associated comments", () => {
+    return request(app).delete("/api/articles/1").expect(204);
+  });
+
+  it("DELETE:404 send error if unable to delete article due to valid article_id which is not in DB", () => {
+    return request(app)
+      .delete("/api/articles/99999")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Unable to delete article");
+      });
+  });
+
+  it("DELETE:400 send error if unable to delete article due to invalid article_id", () => {
+    return request(app)
+      .delete("/api/articles/invalidID")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
+      });
+  });
+});

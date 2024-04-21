@@ -134,3 +134,18 @@ exports.addArticle = (body) => {
       return articles_with_comment_count[0];
     });
 };
+
+exports.deleteArticleByArticleID = (article_id) => {
+  return db
+    .query(`DELETE FROM comments WHERE article_id=$1`, [article_id])
+    .then(() => {
+      return db.query(`DELETE FROM articles WHERE article_id=$1 RETURNING *`, [
+        article_id,
+      ]);
+    })
+    .then(({ rows: deleted_articles }) => {
+      if (deleted_articles.length === 0) {
+        return Promise.reject({ status: 404, msg: "Unable to delete article" });
+      }
+    });
+};

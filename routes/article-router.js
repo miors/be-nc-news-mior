@@ -7,6 +7,11 @@ articleRouter.post("/", articleController.postArticle);
 
 articleRouter.get("/:article_id", articleController.getArticleByID);
 
+articleRouter.delete(
+  "/:article_id",
+  articleController.removeArticleByArticleID
+);
+
 articleRouter.get(
   "/:article_id/comments",
   commentController.getAllCommentsByArticleID
