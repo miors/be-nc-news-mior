@@ -46,7 +46,7 @@ describe("GET /api/users/:username", () => {
       .get("/api/users/invalidUser")
       .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Column cannot be null");
+        expect(msg).toBe("Invalid user");
       });
   });
 });
