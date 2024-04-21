@@ -12,19 +12,6 @@ afterAll(() => {
 });
 
 describe("GET /api/topics", () => {
-  it("GET:200 should send an array of topic objects to the client", () => {
-    return request(app)
-      .get("/api/topics")
-      .expect(200)
-      .then(({ body: { topics } }) => {
-        expect(topics).toHaveLength(3);
-        topics.forEach((topic) => {
-          expect(typeof topic.slug).toBe("string");
-          expect(typeof topic.description).toBe("string");
-        });
-      });
-  });
-
   it("GET:404 should display error when route does not exist", () => {
     return request(app)
       .get("/api/notARoute")

@@ -171,5 +171,19 @@
         "comment_count": 1
       }
     }
+  },
+  "POST /api/topics": {
+    "description": "add a new topic",
+    "queries": [],
+    "request_body": {
+      "slug": "topic name here",
+      "description": "description here"
+    },
+    "exampleResponse": {
+      "topic": {
+        "slug": "topic name here",
+        "description": "description here"
+      }
+    }
   }
 }
