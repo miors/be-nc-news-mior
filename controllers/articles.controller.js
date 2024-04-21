@@ -46,3 +46,13 @@ exports.postArticle = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.removeArticleByArticleID = (req, res, next) => {
+  const { article_id } = req.params;
+  articleModel
+    .deleteArticleByArticleID(article_id)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch(next);
+};

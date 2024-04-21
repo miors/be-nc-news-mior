@@ -104,7 +104,7 @@
     }
   },
   "DELETE /api/comments/:comment_id": {
-    "description": "udelete the given comment by comment_id",
+    "description": "delete the given comment by comment_id",
     "queries": []
   },
   "GET /api/users": {
@@ -185,5 +185,9 @@
         "description": "description here"
       }
     }
+  },
+  "DELETE /api/articles/:article_id": {
+    "description": "delete an article based on an id, and its respective comments",
+    "queries": []
   }
 }
