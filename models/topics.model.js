@@ -6,3 +6,14 @@ exports.fetchAllTopics = () => {
     return rows;
   });
 };
+
+exports.addNewTopic = (slug, descriptiom) => {
+  return db
+    .query(
+      `INSERT INTO topics (slug, description) VALUES ($1, $2) returning *;`,
+      [slug, descriptiom]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
