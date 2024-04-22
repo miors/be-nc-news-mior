@@ -601,7 +601,7 @@ describe("GET /api/articles/:article_id/comments (pagination)", () => {
       });
   });
 
-  it("GET:400 should send error if limit is invalid", () => {
+  it("GET:400 should send error if p is invalid", () => {
     return request(app)
       .get("/api/articles/1/comments?limit=2&p=invalidP")
       .expect(400)
